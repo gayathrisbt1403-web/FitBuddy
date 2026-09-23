@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy - AI Fitness Plan Generator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
+            color: #222;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #198754;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #198754;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #146c43;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #198754;
+            font-weight: bold;
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>💪 FitBuddy</h1>
+
+        <p class="subtitle">
+            AI Fitness Plan Generator using Gemini
+        </p>
+
+        <form id="fitnessForm">
+
+            <label>Name</label>
+            <input type="text" id="name" required>
+
+            <label>Age</label>
+            <input type="number" id="age" required>
+
+            <label>Height (cm)</label>
+            <input type="number" id="height" required>
+
+            <label>Weight (kg)</label>
+            <input type="number" id="weight" required>
+
+            <label>Fitness Goal</label>
+            <select id="goal" required>
+                <option value="">Select your goal</option>
+                <option value="Weight Loss">Weight Loss</option>
+                <option value="Muscle Gain">Muscle Gain</option>
+                <option value="General Fitness">General Fitness</option>
+                <option value="Improve Strength">Improve Strength</option>
+                <option value="Improve Endurance">Improve Endurance</option>
+            </select>
+
+            <label>Activity Level</label>
+            <select id="activityLevel" required>
+                <option value="">Select activity level</option>
+                <option value="Beginner / Low Activity">Beginner / Low Activity</option>
+                <option value="Moderately Active">Moderately Active</option>
+                <option value="Very Active">Very Active</option>
+            </select>
+
+            <label>Fitness Experience</label>
+            <select id="experience" required>
+                <option value="">Select experience</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+            </select>
+
+            <label>Available Workout Time</label>
+            <select id="availableTime" required>
+                <option value="">Select time</option>
+                <option value="15-20 minutes">15-20 minutes</option>
+                <option value="30 minutes">30 minutes</option>
+                <option value="45 minutes">45 minutes</option>
+                <option value="60 minutes">60 minutes</option>
+            </select>
+
+            <button type="submit">
+                Generate My Fitness Plan
+            </button>
+
+        </form>
+
+        <div id="loading">
+            🤖 FitBuddy is creating your personalized plan...
+        </div>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+        document.getElementById("fitnessForm").addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const loading = document.getElementById("loading");
+            const result = document.getElementById("result");
+
+            loading.style.display = "block";
+            result.innerHTML = "";
+
+            const userData = {
+                name: document.getElementById("name").value,
+                age: document.getElementById("age").value,
+                height: document.getElementById("height").value,
+                weight: document.getElementById("weight").value,
+                goal: document.getElementById("goal").value,
+                activityLevel: document.getElementById("activityLevel").value,
+                experience: document.getElementById("experience").value,
+                availableTime: document.getElementById("availableTime").value
+            };
+
+            try {
+
+                const response = await fetch("/api/generate-plan", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    result.innerHTML = data.plan;
+                } else {
+                    result.innerHTML = "❌ " + data.message;
+                }
+
+            } catch (error) {
+
+                result.innerHTML =
+                    "❌ Unable to connect to FitBuddy server.";
+
+                console.error(error);
+
+            } finally {
+
+                loading.style.display = "none";
+
+            }
+
+        });
+    </script>
+
+</body>
+</html>

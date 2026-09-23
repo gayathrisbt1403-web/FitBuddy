@@ -1,0 +1,15 @@
+{
+  "name": "fitbuddy",
+  "version": "1.0.0",
+  "description": "FitBuddy - AI Fitness Plan Generator using Gemini Models",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.16.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0"
+  }
+}
